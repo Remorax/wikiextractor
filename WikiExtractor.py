@@ -208,6 +208,8 @@ templateKeys = set(['10', '828'])
 # Regex for identifying disambig pages
 filter_disambig_page_pattern = re.compile("{{disambig(uation)?(\|[^}]*)?}}")
 
+domain = "information security"
+
 ##
 # page filtering logic -- remove templates, undesired xml namespaces, and disambiguation pages
 def keepPage(ns, page):
@@ -218,7 +220,10 @@ def keepPage(ns, page):
         for line in page:
             if filter_disambig_page_pattern.match(line):
                 return False
-    return True
+    for line in page:
+        if domain in line.lower():
+            return True
+    return False
 
 
 def get_url(uid):
@@ -562,20 +567,20 @@ class Extractor(object):
             out.write(out_str)
             out.write('\n')
         else:
-            if options.print_revision:
-                header = '<doc id="%s" revid="%s" url="%s" title="%s">\n' % (self.id, self.revid, url, self.title)
-            else:
-                header = '<doc id="%s" url="%s" title="%s">\n' % (self.id, url, self.title)
-            footer = "\n</doc>\n"
+            # if options.print_revision:
+            #     header = '<doc id="%s" revid="%s" url="%s" title="%s">\n' % (self.id, self.revid, url, self.title)
+            # else:
+            #     header = '<doc id="%s" url="%s" title="%s">\n' % (self.id, url, self.title)
+            # footer = "\n</doc>\n"
             if out == sys.stdout:   # option -a or -o -
                 header = header.encode('utf-8')
-            out.write(header)
+            # out.write(header)
             for line in text:
                 if out == sys.stdout:   # option -a or -o -
                     line = line.encode('utf-8')
                 out.write(line)
                 out.write('\n')
-            out.write(footer)
+            # out.write(footer)
 
     def extract(self, out):
         """
